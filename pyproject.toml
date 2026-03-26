@@ -31,6 +31,7 @@ checks = "python_response_time.pre_flight:run_checks"
 
 [tool.semantic_release]
 allow_version_zero = true
+major_on_zero = false
 build_command = """
     python -m pip install -e '.[build]'
     uv lock --upgrade-package "$PACKAGE_NAME"
