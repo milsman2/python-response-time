@@ -1,0 +1,60 @@
+[project]
+name = "python-response-time"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "black>=26.3.1",
+    "coverage>=7.13.5",
+    "isort>=8.0.1",
+    "loguru>=0.7.3",
+    "pydantic>=2.12.5",
+    "pydantic-settings>=2.13.1",
+    "pytest>=9.0.2",
+    "requests>=2.32.5",
+    "rich>=14.3.3",
+    "ruff>=0.15.7",
+    "typer>=0.24.1",
+]
+
+[project.optional-dependencies]
+build = ["uv == 0.10.12"]
+
+[build-system]
+requires = ["uv_build == 0.10.12"]
+build-backend = "uv_build"
+
+[project.scripts]
+python-response-time = "python_response_time.main:run_app"
+checks = "python_response_time.pre_flight:run_checks"
+
+[tool.semantic_release]
+allow_version_zero = true
+build_command = """
+    python -m pip install -e '.[build]'
+    uv lock --upgrade-package "$PACKAGE_NAME"
+    git add uv.lock
+    uv build
+"""
+version_toml = ["pyproject.toml:project.version"]
+
+[tool.coverage.run]
+source = ["src"]
+
+[tool.coverage.report]
+omit = ["tests/*"]
+
+[tool.black]
+target-version = ["py313"]
+
+[tool.ruff]
+line-length = 88
+exclude = ["__pycache__", "build", "dist", ".venv"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "C", "B", "I", "N", "D", "UP", "T", "A"]
+ignore = []
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["F401"]
