@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.0.1 (2026-03-26)
+
+### Bug Fixes
+
+- Update CMD in Dockerfile and adjust major_on_zero in pyproject.toml
+  ([`f03e64c`](https://github.com/milsman2/python-response-time/commit/f03e64c7e3093d17ffbd5556b0d3cc5bb6ddf2fd))
+
+
 ## v1.0.0 (2026-03-26)
 
 - Initial Release
