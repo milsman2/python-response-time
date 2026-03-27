@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.3.0 (2026-03-27)
+
+### Features
+
+- Enhance logging with Rich console output and remove log format
+  ([`d7f987b`](https://github.com/milsman2/python-response-time/commit/d7f987b59df60688dea440f861f9b8157dc8268b))
+
+
 ## v1.2.0 (2026-03-27)
 
 ### Features
