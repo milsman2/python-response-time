@@ -21,6 +21,9 @@ class Settings(BaseSettings):
     TIMEOUT: Annotated[
         float, Field(gt=0, le=120, description="Request timeout in seconds")
     ] = 10.0
+    REQUEST_DELAY: Annotated[
+        float, Field(gt=0, le=60, description="Delay between requests in seconds")
+    ] = 0.1
     LOG_LEVEL: Annotated[
         str, Field(pattern="^(DEBUG|INFO|WARNING|ERROR|CRITICAL)$")
     ] = "INFO"
