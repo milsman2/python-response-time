@@ -1,18 +1,51 @@
-"""Main entry point for the Python Response Time application."""
+"""Python Response Time Benchmark (production-safe, Docker/K8s friendly)."""
 
+import signal
+import threading
 import time
 
 import requests
+from loguru import logger
 from rich.console import Console
 
 from python_response_time.core import app_settings, setup_logger
 
+setup_logger(app_settings.LOG_LEVEL)
 console = Console()
+
+shutdown_event = threading.Event()
+
+
+def handle_shutdown(*_):
+    """Handle SIGTERM / SIGINT."""
+    shutdown_event.set()
+    console.print("\n[yellow]Shutdown signal received... stopping gracefully[/yellow]")
+
+
+def register_signals():
+    """Register signal handlers for graceful shutdown."""
+    signal.signal(signal.SIGTERM, handle_shutdown)
+    signal.signal(signal.SIGINT, handle_shutdown)
+
+
+def sleep_interruptible(seconds: float):
+    """Sleep in small increments, checking for shutdown signal."""
+    step = 0.1
+    elapsed = 0.0
+
+    while elapsed < seconds:
+        if shutdown_event.is_set():
+            return
+        try:
+            time.sleep(step)
+        except KeyboardInterrupt:
+            shutdown_event.set()
+            return
+        elapsed += step
 
 
 def run_app():
-    """Run HTTP benchmark and display results via Rich."""
-    logger = setup_logger(app_settings.LOG_LEVEL)
+    """Run the main application logic."""
     console.print("[bold cyan]HTTP Benchmark Starting...[/bold cyan]")
     console.print(f"Target: {app_settings.TARGET_URL}")
     console.print(f"Requests: {app_settings.NUM_REQUESTS}")
@@ -23,31 +56,62 @@ def run_app():
 
     session = requests.Session()
 
-    console.print("[bold green]Running benchmark...[/bold green]\n")
-
-    for i in range(app_settings.NUM_REQUESTS):
-        start_time = time.perf_counter()
-        try:
-            response = session.get(
-                str(app_settings.TARGET_URL),
-                timeout=app_settings.TIMEOUT,
-                verify=app_settings.VERIFY_SSL,
-            )
-            elapsed_ms = (time.perf_counter() - start_time) * 1000
-            logger.info(
-                f"Request {i + 1}: {response.status_code} in {elapsed_ms:.2f} ms"
-            )
-
-        except requests.exceptions.SSLError as e:
-            console.print(f"[red]Request {i + 1} SSL error: {e}[/red]")
-
-        except requests.RequestException as e:
-            console.print(f"[red]Request {i + 1} failed: {e}[/red]")
-
-        finally:
+    try:
+        for i in range(app_settings.NUM_REQUESTS):
+            if shutdown_event.is_set():
+                break
+            start_time = time.perf_counter()
+            try:
+                response = session.get(
+                    str(app_settings.TARGET_URL),
+                    timeout=app_settings.TIMEOUT,
+                    verify=app_settings.VERIFY_SSL,
+                )
+                elapsed_ms = (time.perf_counter() - start_time) * 1000
+                console.print(
+                    f"{i + 1:>4} | {response.status_code} | {elapsed_ms:.2f} ms"
+                )
+                logger.info(
+                    {
+                        "request": i + 1,
+                        "status": response.status_code,
+                        "response_time_ms": elapsed_ms,
+                        "url": str(app_settings.TARGET_URL),
+                    }
+                )
+            except requests.exceptions.SSLError as e:
+                console.print(f"{i + 1:>4} | SSL ERROR")
+                logger.error(
+                    {
+                        "request": i + 1,
+                        "error": "ssl_error",
+                        "details": str(e),
+                    }
+                )
+            except requests.RequestException as e:
+                console.print(f"{i + 1:>4} | ERROR")
+                logger.error(
+                    {
+                        "request": i + 1,
+                        "error": "request_error",
+                        "details": str(e),
+                    }
+                )
             if app_settings.REQUEST_DELAY > 0:
-                time.sleep(app_settings.REQUEST_DELAY)
+                sleep_interruptible(app_settings.REQUEST_DELAY)
+    finally:
+        session.close()
+        console.print("\n[green]Benchmark stopped gracefully[/green]")
 
 
 if __name__ == "__main__":
-    run_app()
+    """Run the application."""
+    register_signals()
+    try:
+        run_app()
+    except KeyboardInterrupt:
+        shutdown_event.set()
+        console.print("\n[yellow]Interrupted (Ctrl+C). Exiting cleanly...[/yellow]")
+    finally:
+        shutdown_event.set()
+        console.print("[green]Cleanup complete[/green]")
