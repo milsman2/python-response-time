@@ -9,6 +9,7 @@ dependencies = [
     "coverage>=7.13.5",
     "isort>=8.0.1",
     "loguru>=0.7.3",
+    "prometheus-client>=0.24.1",
     "pydantic>=2.12.5",
     "pydantic-settings>=2.13.1",
     "pytest>=9.0.2",
