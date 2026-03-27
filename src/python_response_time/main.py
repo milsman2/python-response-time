@@ -12,7 +12,13 @@ setup_logger(app_settings.LOG_LEVEL)
 
 def run_app():
     """Run a simple HTTP benchmark against the configured target URL."""
+    logger.info(f"Target URL: {app_settings.TARGET_URL}")
+    logger.info(f"Number of Requests: {app_settings.NUM_REQUESTS}")
+    logger.info(f"Concurrency: {app_settings.CONCURRENCY}")
+    logger.info(f"Timeout: {app_settings.TIMEOUT} seconds")
+    logger.info(f"Request Delay: {app_settings.REQUEST_DELAY} seconds")
     logger.info("Starting HTTP benchmark...")
+
     for i in range(app_settings.NUM_REQUESTS):
         start_time = time.time()
         try:
@@ -26,6 +32,8 @@ def run_app():
             )
         except requests.RequestException as e:
             logger.error(f"Request {i + 1} failed: {e}")
+        finally:
+            time.sleep(app_settings.REQUEST_DELAY)
 
 
 if __name__ == "__main__":
