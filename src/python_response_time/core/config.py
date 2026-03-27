@@ -17,7 +17,7 @@ class Settings(BaseSettings):
     ] = 10
     CONCURRENCY: Annotated[
         int, Field(gt=0, le=10_000, description="Concurrent requests")
-    ] = 2
+    ] = 1
     TIMEOUT: Annotated[
         float, Field(gt=0, le=120, description="Request timeout in seconds")
     ] = 10.0

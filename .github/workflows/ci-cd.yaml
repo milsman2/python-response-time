@@ -14,15 +14,21 @@ on:
 jobs:
   cache:
     uses: milsman2/python-app-template/.github/workflows/cache-uv-build.yaml@main
-
+    with:
+      UV_VERSION: ${{ vars.UV_VERSION }}
+      PYTHON_VERSION: ${{ vars.PYTHON_VERSION }}
   lint:
     uses: milsman2/python-app-template/.github/workflows/ruff.yaml@main
     needs: cache
-
+    with:
+      UV_VERSION: ${{ vars.UV_VERSION }}
+      PYTHON_VERSION: ${{ vars.PYTHON_VERSION }}
   test:
     needs: [lint, cache]
     uses: milsman2/python-app-template/.github/workflows/pytest.yaml@main
-
+    with:
+      UV_VERSION: ${{ vars.UV_VERSION }}
+      PYTHON_VERSION: ${{ vars.PYTHON_VERSION }}
   docker-build-and-image-scan:
     if: github.event_name == 'push'
     needs: test
@@ -30,9 +36,10 @@ jobs:
     with:
       DOCKER_PATH_CONTEXT: .
       DOCKER_BUILD_DOCKERFILE: ./Dockerfile
-      DOCKER_TAGS: ${{ github.repository }}:${{ github.sha }}
+      DOCKER_TAGS: ${{ vars.DOCKER_USERNAME }}/${{ vars.DOCKER_REPOSITORY }}:${{ github.sha }}
       DOCKER_LOAD_BOOL: false
       DOCKER_PUSH_BOOL: ${{ github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v') }}
+      DOCKER_USERNAME: ${{ vars.DOCKER_USERNAME }}
     secrets: inherit
 
   release:
@@ -42,3 +49,10 @@ jobs:
     permissions:
       contents: write
     secrets: inherit
+    with:
+      DOCKER_USERNAME: ${{ vars.DOCKER_USERNAME }}
+      DOCKER_REPOSITORY: ${{ vars.DOCKER_REPOSITORY }}
+      UV_VERSION: ${{ vars.UV_VERSION }}
+      PYTHON_VERSION: ${{ vars.PYTHON_VERSION }}
+      DOCKER_PATH_CONTEXT: .
+      DOCKER_BUILD_DOCKERFILE: ./Dockerfile
