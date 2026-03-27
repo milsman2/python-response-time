@@ -22,4 +22,5 @@ COPY --from=builder --chown=nonroot:nonroot /app/ /app
 ENV PATH="/app/.venv/bin:$PATH"
 USER nonroot
 WORKDIR /app/src
+EXPOSE 8000
 CMD ["python", "-m", "python_response_time.main"]

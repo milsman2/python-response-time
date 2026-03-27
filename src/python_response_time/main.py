@@ -8,7 +8,13 @@ import requests
 from loguru import logger
 from rich.console import Console
 
-from python_response_time.core import app_settings, setup_logger
+from python_response_time.core import (
+    REQUEST_COUNT,
+    REQUEST_LATENCY,
+    app_settings,
+    setup_logger,
+    start_metrics_server,
+)
 
 setup_logger(app_settings.LOG_LEVEL)
 console = Console()
@@ -67,18 +73,20 @@ def run_app():
                     timeout=app_settings.TIMEOUT,
                     verify=app_settings.VERIFY_SSL,
                 )
-                elapsed_ms = (time.perf_counter() - start_time) * 1000
+                elapsed = time.perf_counter() - start_time
                 console.print(
-                    f"{i + 1:>4} | {response.status_code} | {elapsed_ms:.2f} ms"
+                    f"{i + 1:>4} | {response.status_code} | {elapsed * 1000:.2f} ms"
                 )
                 logger.info(
                     {
                         "request": i + 1,
                         "status": response.status_code,
-                        "response_time_ms": elapsed_ms,
+                        "response_time_ms": elapsed * 1000,
                         "url": str(app_settings.TARGET_URL),
                     }
                 )
+                REQUEST_COUNT.labels(status=str(response.status_code)).inc()
+                REQUEST_LATENCY.observe(elapsed)
             except requests.exceptions.SSLError as e:
                 console.print(f"{i + 1:>4} | SSL ERROR")
                 logger.error(
@@ -89,6 +97,7 @@ def run_app():
                     }
                 )
             except requests.RequestException as e:
+                REQUEST_COUNT.labels(status="error").inc()
                 console.print(f"{i + 1:>4} | ERROR")
                 logger.error(
                     {
@@ -107,6 +116,7 @@ def run_app():
 if __name__ == "__main__":
     """Run the application."""
     register_signals()
+    start_metrics_server(port=8000)
     try:
         run_app()
     except KeyboardInterrupt:
