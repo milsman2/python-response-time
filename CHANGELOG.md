@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.4.0 (2026-03-27)
+
+### Features
+
+- Implement graceful shutdown and enhance request logging in main.py
+  ([`9761126`](https://github.com/milsman2/python-response-time/commit/97611264e2928bd2fa38c567e72ae2e3069aed2d))
+
+
 ## v1.3.0 (2026-03-27)
 
 ### Features
