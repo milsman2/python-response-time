@@ -27,6 +27,9 @@ class Settings(BaseSettings):
     LOG_LEVEL: Annotated[
         str, Field(pattern="^(DEBUG|INFO|WARNING|ERROR|CRITICAL)$")
     ] = "INFO"
+    VERIFY_SSL: Annotated[
+        bool, Field(description="Whether to verify SSL certificates")
+    ] = True
 
     model_config = SettingsConfigDict(
         env_file=".env",
