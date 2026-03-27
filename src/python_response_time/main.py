@@ -86,7 +86,9 @@ def run_app():
                     }
                 )
                 REQUEST_COUNT.labels(status=str(response.status_code)).inc()
-                REQUEST_LATENCY.observe(elapsed)
+                REQUEST_LATENCY.labels(status=str(response.status_code)).observe(
+                    elapsed
+                )
             except requests.exceptions.SSLError as e:
                 console.print(f"{i + 1:>4} | SSL ERROR")
                 logger.error(
