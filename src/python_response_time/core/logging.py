@@ -4,13 +4,6 @@ import sys
 
 from loguru import logger
 
-log_format = (
-    "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | "
-    "<level>{level: <8}</level> | "
-    "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - "
-    "<level>{message}</level>"
-)
-
 
 def setup_logger(level: str = "INFO"):
     """Configure and return a Loguru logger instance.
@@ -27,7 +20,7 @@ def setup_logger(level: str = "INFO"):
     if level.upper() == "SILENT":
         logger.add(
             "app.log",
-            format=log_format,
+            serialize=True,
             level="ERROR",
             rotation="1 MB",
             retention="10 days",
@@ -36,7 +29,7 @@ def setup_logger(level: str = "INFO"):
     else:
         logger.add(
             sys.stdout,
-            format=log_format,
+            serialize=True,
             level=level,
             backtrace=True,
             diagnose=True,
@@ -44,7 +37,7 @@ def setup_logger(level: str = "INFO"):
         )
         logger.add(
             "app.log",
-            format=log_format,
+            serialize=True,
             level=level,
             rotation="1 MB",
             retention="10 days",
