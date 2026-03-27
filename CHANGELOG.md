@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.2.0 (2026-03-27)
+
+### Features
+
+- Add SSL verification setting and logging in main.py
+  ([`ae0c78a`](https://github.com/milsman2/python-response-time/commit/ae0c78a4053b86be218b6a806429c4ced3af4439))
+
+
 ## v1.1.0 (2026-03-27)
 
 ### Features
