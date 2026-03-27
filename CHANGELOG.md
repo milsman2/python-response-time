@@ -2,6 +2,17 @@
 
 <!-- version list -->
 
+## v1.5.0 (2026-03-27)
+
+### Features
+
+- Add healthcheck for metrics endpoint and improve latency observation
+  ([`dedf3cf`](https://github.com/milsman2/python-response-time/commit/dedf3cf736d20766cf0399ae392c2b2d2b042790))
+
+- Add Prometheus metrics support and update Dockerfile for exposure
+  ([`0928fb3`](https://github.com/milsman2/python-response-time/commit/0928fb3c8ff64ef81a853a0457ffeff48d536fbf))
+
+
 ## v1.4.0 (2026-03-27)
 
 ### Features
