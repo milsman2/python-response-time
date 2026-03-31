@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.6.0 (2026-03-31)
+
+### Features
+
+- Simplify Docker build and release conditions in CI/CD pipeline
+  ([`d8a9b6f`](https://github.com/milsman2/python-response-time/commit/d8a9b6f3b599253e541abdce9b6ef73054127905))
+
+
 ## v1.5.0 (2026-03-27)
 
 ### Features
