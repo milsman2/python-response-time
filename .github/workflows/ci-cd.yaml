@@ -37,11 +37,8 @@ jobs:
       DOCKER_PATH_CONTEXT: .
       DOCKER_BUILD_DOCKERFILE: ./Dockerfile
       DOCKER_TAGS: ${{ vars.DOCKER_USERNAME }}/${{ vars.DOCKER_REPOSITORY }}:${{ github.sha }}
-      DOCKER_LOAD_BOOL: false
-      DOCKER_PUSH_BOOL: ${{ github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v') }}
       DOCKER_USERNAME: ${{ vars.DOCKER_USERNAME }}
     secrets: inherit
-
   release:
     if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
     needs: [test, docker-build-and-image-scan]
