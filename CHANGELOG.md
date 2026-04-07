@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.7.1 (2026-04-07)
+
+### Bug Fixes
+
+- Update configuration options and enhance documentation for signal handling and graceful shutdown
+  ([`4d6d51f`](https://github.com/milsman2/python-response-time/commit/4d6d51f38a7e3ffb7c53bc0f7dcc2bc57517b502))
+
+
 ## v1.7.0 (2026-04-07)
 
 ### Features
