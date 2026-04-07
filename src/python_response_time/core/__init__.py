@@ -7,6 +7,7 @@ from python_response_time.core.metrics import (
     REQUEST_LATENCY,
     start_metrics_server,
 )
+from python_response_time.core.startup import register_signals, sleep_interruptible
 
 __all__ = [
     "app_settings",
@@ -14,4 +15,6 @@ __all__ = [
     "start_metrics_server",
     "REQUEST_COUNT",
     "REQUEST_LATENCY",
+    "register_signals",
+    "sleep_interruptible",
 ]

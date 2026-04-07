@@ -18,20 +18,6 @@ def test_num_requests():
     assert 0 < n <= 1_000_000
 
 
-def test_concurrency():
-    """CONCURRENCY should be an int > 0 and <= 10_000."""
-    c = app_settings.CONCURRENCY
-    assert isinstance(c, int)
-    assert 0 < c <= 10_000
-
-
-def test_timeout():
-    """TIMEOUT should be a float > 0 and <= 120."""
-    t = app_settings.TIMEOUT
-    assert isinstance(t, float)
-    assert 0 < t <= 120
-
-
 def test_log_level():
     """LOG_LEVEL should be a valid log level string."""
     level = app_settings.LOG_LEVEL

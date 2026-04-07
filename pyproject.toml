@@ -7,7 +7,6 @@ requires-python = ">=3.13"
 dependencies = [
     "black>=26.3.1",
     "coverage>=7.13.5",
-    "isort>=8.0.1",
     "loguru>=0.7.3",
     "prometheus-client>=0.24.1",
     "pydantic>=2.12.5",
@@ -27,7 +26,7 @@ requires = ["uv_build == 0.10.12"]
 build-backend = "uv_build"
 
 [project.scripts]
-python-response-time = "python_response_time.main:run_app"
+python-response-time = "python_response_time.main:main"
 checks = "python_response_time.pre_flight:run_checks"
 
 [tool.semantic_release]
@@ -56,7 +55,9 @@ exclude = ["__pycache__", "build", "dist", ".venv"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "C", "B", "I", "N", "D", "UP", "T", "A"]
-ignore = []
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["F401"]
+
+[tool.ruff.format]
+quote-style = "double"
