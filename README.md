@@ -29,22 +29,26 @@ uv run checks
 
 All settings are managed with Pydantic v2 and can be set via environment variables or a `.env` file:
 
-| Variable      | Type   | Default                  | Description                        |
-|---------------|--------|--------------------------|------------------------------------|
-| TARGET_URL    | str    | https://httpbin.org/get  | Target endpoint for benchmarking   |
-| NUM_REQUESTS  | int    | 10                       | Total number of requests           |
-| CONCURRENCY   | int    | 2                        | Number of concurrent requests      |
-| TIMEOUT       | float  | 10.0                     | Request timeout (seconds)          |
-| LOG_LEVEL     | str    | INFO                     | Log level (DEBUG, INFO, etc.)      |
+| Variable         | Type   | Default                  | Description                                 |
+|------------------|--------|--------------------------|---------------------------------------------|
+| TARGET_URL       | str    | https://httpbin.org/get  | Target endpoint for benchmarking            |
+| NUM_REQUESTS     | int    | 10                       | Total number of requests                    |
+| CONNECT_TIMEOUT  | float  | 1.0                      | Connection timeout in seconds               |
+| READ_TIMEOUT     | float  | 3.0                      | Request timeout in seconds                  |
+| REQUEST_DELAY    | float  | 0.1                      | Delay between requests in seconds           |
+| LOG_LEVEL        | str    | INFO                     | Log level (DEBUG, INFO, WARNING, ERROR, CRITICAL) |
+| VERIFY_SSL       | bool   | True                     | Whether to verify SSL certificates          |
 
 Example `.env`:
 
 ```
 TARGET_URL=https://example.com/api
 NUM_REQUESTS=100
-CONCURRENCY=5
-TIMEOUT=5.0
+CONNECT_TIMEOUT=2.0
+READ_TIMEOUT=5.0
+REQUEST_DELAY=0.5
 LOG_LEVEL=DEBUG
+VERIFY_SSL=False
 ```
 
 ## DevOps & Pythonic Practices
@@ -56,18 +60,35 @@ LOG_LEVEL=DEBUG
 - **CI/CD ready**: Semantic release and coverage tools are pre-configured.
 - **Type annotations**: All code is type-annotated for clarity and safety.
 
+tests/
+
+## Architecture
+
+### Graceful Shutdown & Signal Handling
+
+- Signal handling is modular: the signal handler function is defined at module scope and can be reused or tested independently.
+- `register_signals` simply registers this handler for SIGINT/SIGTERM, and the handler itself is not nested or dynamically created.
+- This makes the shutdown logic more testable, maintainable, and explicit.
+
 ## Project Structure
 
 ```
 src/python_response_time/
-    main.py         # Benchmark runner
+    main.py         # Benchmark runner, entry point, signal registration
     pre_flight.py   # DevOps checks
     core/
         config.py   # Pydantic v2 settings
         logging.py  # Loguru setup
+        startup.py  # Signal handler and registration logic
 tests/
     test_basic.py   # Pytest-based config tests
 ```
+
+## CI/CD Pipeline
+
+- Linting, testing, and Docker image build are triggered on every push and pull request.
+- The pipeline is not affected by the signal handler refactor; no changes are required for this architectural update.
+- See `.github/workflows/ci-cd.yaml` for details.
 
 ## License
 
