@@ -15,12 +15,12 @@ class Settings(BaseSettings):
     NUM_REQUESTS: Annotated[
         int, Field(gt=0, le=1_000_000, description="Total number of requests")
     ] = 10
-    CONCURRENCY: Annotated[
-        int, Field(gt=0, le=10_000, description="Concurrent requests")
-    ] = 1
-    TIMEOUT: Annotated[
+    CONNECT_TIMEOUT: Annotated[
+        float, Field(gt=0, le=120, description="Connection timeout in seconds")
+    ] = 1.0
+    READ_TIMEOUT: Annotated[
         float, Field(gt=0, le=120, description="Request timeout in seconds")
-    ] = 10.0
+    ] = 3.0
     REQUEST_DELAY: Annotated[
         float, Field(gt=0, le=60, description="Delay between requests in seconds")
     ] = 0.1

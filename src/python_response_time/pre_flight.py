@@ -21,17 +21,16 @@ def _run(cmd: list[str]) -> None:
 
 
 def run_checks() -> None:
-    """Run ruff, isort, black and tests (coverage+pytest).
+    """Run ruff, black, and tests (coverage+pytest).
 
-    This is intended to be invoked via the project script entrypoint, e.g.:
-    `uv run checks` or `python -m python_response_time.pre_flight run_checks`
-    when installed.
+    Intended usage:
+    `uv run checks`
     """
     py = sys.executable
-    _run([py, "-m", "ruff", "check", ".", "--fix", "--exit-zero"])
-    _run([py, "-m", "isort", "."])
+
+    _run([py, "-m", "ruff", "check", ".", "--fix"])
     _run([py, "-m", "black", "."])
-    _run([py, "-m", "ruff", "check", ".", "--exit-zero"])
+    _run([py, "-m", "ruff", "check", "."])
     _run([py, "-m", "coverage", "run", "-m", "pytest"])
 
     logger.info("All checks completed.")
