@@ -2,6 +2,15 @@
 
 <!-- version list -->
 
+## v1.7.0 (2026-04-07)
+
+### Features
+
+- Implement signal handling and interruptible sleep; update app entrypoint and configuration
+  settings
+  ([`6673833`](https://github.com/milsman2/python-response-time/commit/6673833cb6da6393e536cee039e2e8f53f3a3a49))
+
+
 ## v1.6.0 (2026-03-31)
 
 ### Features
