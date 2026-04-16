@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.7.2 (2026-04-16)
+
+### Bug Fixes
+
+- Update versions
+  ([`7a89ac9`](https://github.com/milsman2/python-response-time/commit/7a89ac9343d75eaf541d816b6417e2326f773273))
+
+
 ## v1.7.1 (2026-04-07)
 
 ### Bug Fixes
