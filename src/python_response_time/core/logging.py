@@ -16,12 +16,14 @@ def setup_logger(level: str = "INFO"):
         logger: Configured Loguru logger instance.
 
     """
+    from .config import app_settings
+
     logger.remove()
-    if level.upper() == "SILENT":
+    if not getattr(app_settings, "LOG_TO_STDOUT", True):
         logger.add(
             "app.log",
             serialize=True,
-            level="ERROR",
+            level=level,
             rotation="1 MB",
             retention="10 days",
             compression="zip",
