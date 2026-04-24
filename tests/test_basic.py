@@ -3,12 +3,13 @@
 from python_response_time.core import app_settings
 
 
-def test_target_url():
+def test_target_urls():
     """TARGET_URL should be a non-empty string starting with http(s)."""
-    url = app_settings.TARGET_URL
-    assert isinstance(url, str)
-    assert url.startswith("http")
-    assert len(url) > 0
+    urls = app_settings.TARGET_URL
+    assert isinstance(urls, list)
+    assert all(isinstance(url, str) for url in urls)
+    assert all(url.startswith("http") for url in urls)
+    assert all(len(url) > 0 for url in urls)
 
 
 def test_num_requests():
