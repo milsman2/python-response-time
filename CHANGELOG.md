@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.8.0 (2026-04-24)
+
+### Features
+
+- Allow for list of multiple urls
+  ([`55019e2`](https://github.com/milsman2/python-response-time/commit/55019e27ea601cbac64bf3be24a7c5e684ba5c68))
+
+
 ## v1.7.2 (2026-04-16)
 
 ### Bug Fixes
