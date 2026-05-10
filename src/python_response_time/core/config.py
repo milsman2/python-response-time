@@ -1,6 +1,5 @@
 """Configuration settings for the HTTP benchmark."""
 
-import os
 from typing import Annotated
 
 from pydantic import Field
