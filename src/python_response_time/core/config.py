@@ -12,7 +12,6 @@ class Settings(BaseSettings):
     LOG_TO_STDOUT: Annotated[
         bool, Field(description="Whether to log to stdout (console)", strict=False)
     ] = True
-
     TARGET_URL: Annotated[
         list[str], Field(description="List of target endpoints for benchmarking")
     ] = ["https://httpbin.org/get", "https://httpbin.org/status/200"]
