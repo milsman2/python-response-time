@@ -2,6 +2,17 @@
 
 <!-- version list -->
 
+## v1.8.1 (2026-05-10)
+
+### Bug Fixes
+
+- Add configuration tests and settings validation
+  ([`9979ea4`](https://github.com/milsman2/python-response-time/commit/9979ea41ab14ca926684cce09b940dc6e32bae20))
+
+- Remove unused import from configuration settings
+  ([`8a8d172`](https://github.com/milsman2/python-response-time/commit/8a8d17299a1c3e08948b110f21dc81ce8f4cb306))
+
+
 ## v1.8.0 (2026-04-24)
 
 ### Features
