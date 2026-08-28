@@ -2,6 +2,17 @@
 
 <!-- version list -->
 
+## v1.8.2 (2026-08-28)
+
+### Bug Fixes
+
+- Small version bumps
+  ([`ce500e3`](https://github.com/milsman2/python-response-time/commit/ce500e393852378eda940dba644f68e0e670eac6))
+
+- Update base images to use trixie-slim variants in Dockerfile
+  ([`6bf98cd`](https://github.com/milsman2/python-response-time/commit/6bf98cdba1a5cec4da23e8d45f8dad18604012a1))
+
+
 ## v1.8.1 (2026-05-10)
 
 ### Bug Fixes
