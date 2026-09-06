@@ -1,94 +1,138 @@
 # python-response-time
 
-A Pythonic, DevOps-friendly HTTP benchmarking tool leveraging Pydantic v2 for robust configuration, Loguru for structured logging, and a modern, testable workflow.
+A small, Pythonic HTTP benchmark for measuring response latency against one or more endpoints while exposing Prometheus metrics and handling shutdown signals cleanly.
+
+## What it does
+
+This project runs a sequential HTTP benchmark against configured URLs and prints timing information for each request. It also starts a Prometheus metrics server so you can scrape request counts and latency histograms.
+
+Key behaviors:
+
+- Sends requests to a configurable list of target URLs
+- Validates settings with Pydantic v2
+- Logs structured events with Loguru
+- Supports graceful shutdown on SIGINT and SIGTERM
+- Exposes metrics on a local Prometheus endpoint
+- Provides a `checks` command for linting and test validation
 
 ## Features
 
-- **Configurable HTTP benchmarking** via environment variables or `.env` file (Pydantic v2 + pydantic-settings)
-- **Structured logging** with Loguru (console and file, colorized, with rotation)
-- **Pre-flight DevOps checks**: auto-formatting, linting, and test coverage in one command
-- **Modern Python packaging**: `pyproject.toml`-based, ready for CI/CD
-- **Type-safe, validated settings**: all config is validated at startup
-- **Tested and type-checked**: includes pytest-based tests for all config
-- **CLI entrypoints** for both benchmarking and checks
+- Configurable benchmark settings via environment variables or a `.env` file
+- Multi-target benchmarking using `TARGET_URL` as a list of endpoints
+- Timeout controls for connection and read phases
+- Optional request delay between iterations
+- Prometheus metrics for request totals and latency distribution
+- Structured console logging with log level control
+- DevOps smoke checks via a dedicated script entry point
 
 ## Quickstart
 
+Install the project in editable mode:
+
 ```bash
-# Install with all dev dependencies
+python -m pip install -e '.[build]'
+```
+
+Run the benchmark:
+
+```bash
+python-response-time
+```
+
+Or with `uv`:
+
+```bash
 uv pip install -e '.[build]'
-
-# Run the HTTP benchmark
 uv run python-response-time
+```
 
-# Run all pre-flight DevOps checks (format, lint, test)
+Run the project validation checks:
+
+```bash
 uv run checks
 ```
 
 ## Configuration
 
-All settings are managed with Pydantic v2 and can be set via environment variables or a `.env` file:
+Settings are defined in `src/python_response_time/core/config.py` and are loaded from environment variables or a `.env` file. Values are validated at startup.
 
-| Variable         | Type   | Default                  | Description                                 |
-|------------------|--------|--------------------------|---------------------------------------------|
-| TARGET_URL       | str    | https://httpbin.org/get  | Target endpoint for benchmarking            |
-| NUM_REQUESTS     | int    | 10                       | Total number of requests                    |
-| CONNECT_TIMEOUT  | float  | 1.0                      | Connection timeout in seconds               |
-| READ_TIMEOUT     | float  | 3.0                      | Request timeout in seconds                  |
-| REQUEST_DELAY    | float  | 0.1                      | Delay between requests in seconds           |
-| LOG_LEVEL        | str    | INFO                     | Log level (DEBUG, INFO, WARNING, ERROR, CRITICAL) |
-| VERIFY_SSL       | bool   | True                     | Whether to verify SSL certificates          |
+| Variable | Type | Default | Description |
+|---|---:|---:|---|
+| `LOG_TO_STDOUT` | bool | `true` | Whether to emit logs to stdout |
+| `TARGET_URL` | list[str] | `["https://httpbin.org/get", "https://httpbin.org/status/200"]` | Target endpoints for benchmarking |
+| `NUM_REQUESTS` | int | `10` | Total number of requests to send for each URL |
+| `CONNECT_TIMEOUT` | float | `1.0` | Connection timeout in seconds |
+| `READ_TIMEOUT` | float | `3.0` | Read timeout in seconds |
+| `REQUEST_DELAY` | float | `2.0` | Delay between requests in seconds |
+| `LOG_LEVEL` | str | `INFO` | Supported values: `DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL` |
+| `VERIFY_SSL` | bool | `true` | Whether to verify SSL certificates |
+| `METRICS_PORT` | int | `8000` | Port for the Prometheus metrics endpoint |
 
 Example `.env`:
 
-```
-TARGET_URL=https://example.com/api
-NUM_REQUESTS=100
+```env
+LOG_TO_STDOUT=true
+TARGET_URL=["https://example.com", "https://example.com/api"]
+NUM_REQUESTS=25
 CONNECT_TIMEOUT=2.0
 READ_TIMEOUT=5.0
 REQUEST_DELAY=0.5
 LOG_LEVEL=DEBUG
-VERIFY_SSL=False
+VERIFY_SSL=false
+METRICS_PORT=8000
 ```
 
-## DevOps & Pythonic Practices
+> `TARGET_URL` is parsed as a list. Use valid JSON array syntax when setting it in the environment or `.env` file.
 
-- **Pre-flight checks**: One command (`uv run checks`) runs ruff, isort, black, and pytest with coverage.
-- **Strict config validation**: Pydantic v2 ensures all settings are valid before running.
-- **Logging**: Loguru provides both human-friendly console logs and persistent file logs with rotation and compression.
-- **Modern packaging**: Uses `pyproject.toml` for dependencies, scripts, and tool config.
-- **CI/CD ready**: Semantic release and coverage tools are pre-configured.
-- **Type annotations**: All code is type-annotated for clarity and safety.
+## Metrics
 
-tests/
+When the application starts, it exposes Prometheus metrics on `http://localhost:8000/metrics` by default.
 
-## Architecture
+The metrics include:
 
-### Graceful Shutdown & Signal Handling
+- Request counts by HTTP status or timeout category
+- Request latency distribution by status code
 
-- Signal handling is modular: the signal handler function is defined at module scope and can be reused or tested independently.
-- `register_signals` simply registers this handler for SIGINT/SIGTERM, and the handler itself is not nested or dynamically created.
-- This makes the shutdown logic more testable, maintainable, and explicit.
+## Behavior notes
 
-## Project Structure
+- The benchmark loops sequentially through each URL in `TARGET_URL`.
+- It exits early when a shutdown event is triggered.
+- A Kubernetes-safe interruptible sleep is used between requests to allow fast, graceful shutdown.
+- Any connection timeout, read timeout, SSL error, or request error is recorded and reported without crashing the whole run.
 
+## Development and checks
+
+The project exposes a `checks` script defined in `pyproject.toml`:
+
+```bash
+uv run checks
 ```
-src/python_response_time/
-    main.py         # Benchmark runner, entry point, signal registration
-    pre_flight.py   # DevOps checks
+
+This runs:
+
+1. `ruff check . --fix`
+2. `black .`
+3. `ruff check .`
+4. `coverage run -m pytest`
+
+## Project structure
+
+```text
+src/
+  python_response_time/
+    __init__.py
+    main.py
+    pre_flight.py
     core/
-        config.py   # Pydantic v2 settings
-        logging.py  # Loguru setup
-        startup.py  # Signal handler and registration logic
+      __init__.py
+      config.py
+      logging.py
+      metrics.py
+      startup.py
 tests/
-    test_basic.py   # Pytest-based config tests
+  test_basic.py
+  test_config.py
 ```
-
-## CI/CD Pipeline
-
-- Linting, testing, and Docker image build are triggered on every push and pull request.
-- The pipeline is not affected by the signal handler refactor; no changes are required for this architectural update.
-- See `.github/workflows/ci-cd.yaml` for details.
 
 ## License
 
