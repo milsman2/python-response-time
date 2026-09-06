@@ -13,5 +13,10 @@ on:
 
 jobs:
   ci-cd:
-    uses: milsman2/python-app-template/.github/workflows/ci-cd.yaml@v1.19.5
+    uses: milsman2/python-app-template/.github/workflows/ci-cd.yaml@v1.19.6
+    permissions:
+      contents: write
+    with:
+      UV_VERSION: '0.12.7'
+      PYTHON_VERSION: '3.13'
     secrets: inherit
