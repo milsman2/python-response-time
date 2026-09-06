@@ -2,6 +2,22 @@
 
 <!-- version list -->
 
+## v1.9.0 (2026-09-06)
+
+### Bug Fixes
+
+- Update CI/CD workflows to use latest version of dependencies
+  ([`c8bdff9`](https://github.com/milsman2/python-response-time/commit/c8bdff91e3407c905cb99ee084e026828f50158a))
+
+### Features
+
+- Add mise as source of truth
+  ([`ccdff1a`](https://github.com/milsman2/python-response-time/commit/ccdff1a6fbae663672d45095bc7fbb27b6f4e98d))
+
+- Update CI/CD workflows and add metrics port configuration tests
+  ([`1a36453`](https://github.com/milsman2/python-response-time/commit/1a3645352b50a2b2b137a0df1b0cb9a2cfd0b65b))
+
+
 ## v1.8.2 (2026-08-28)
 
 ### Bug Fixes
