@@ -33,6 +33,9 @@ class Settings(BaseSettings):
     VERIFY_SSL: Annotated[
         bool, Field(description="Whether to verify SSL certificates")
     ] = True
+    METRICS_PORT: Annotated[
+        int, Field(gt=0, le=65535, description="Port for the Prometheus metrics server")
+    ] = 8000
 
     model_config = SettingsConfigDict(
         env_file=".env",
