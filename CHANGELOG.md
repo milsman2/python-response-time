@@ -2,6 +2,20 @@
 
 <!-- version list -->
 
+## v1.9.1 (2026-09-06)
+
+### Bug Fixes
+
+- Simplify CI/CD pipeline by removing unused jobs and steps
+  ([`e3b495d`](https://github.com/milsman2/python-response-time/commit/e3b495d931827794eb2c21085085fd52506c9a94))
+
+- Update CI/CD pipeline to use python-app-template v1.19.6 and set permissions
+  ([`7904609`](https://github.com/milsman2/python-response-time/commit/790460925180f9c114f79510b823eca4cb235d5c))
+
+- Update CI/CD workflows and README documentation for clarity and accuracy
+  ([`a8f74e7`](https://github.com/milsman2/python-response-time/commit/a8f74e78dcff38571903e8bb59be5e9e3507a35d))
+
+
 ## v1.9.0 (2026-09-06)
 
 ### Bug Fixes
