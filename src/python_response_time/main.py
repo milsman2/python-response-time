@@ -123,9 +123,12 @@ def main() -> None:
     console = Console()
     shutdown_event = threading.Event()
     register_signals(shutdown_event, console)
-    start_metrics_server(port=8000)
     try:
+        start_metrics_server(port=app_settings.METRICS_PORT)
         run_app(console, shutdown_event)
+    except OSError as e:
+        logger.error({"event": "os_error", "details": str(e)})
+        console.print(f"[red]OS error occurred: {e}[/red]")
     finally:
         shutdown_event.set()
         console.print("[green]Cleanup complete[/green]")

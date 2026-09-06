@@ -18,6 +18,7 @@ def test_default_values(monkeypatch):
     monkeypatch.delenv("LOG_LEVEL", raising=False)
     monkeypatch.delenv("VERIFY_SSL", raising=False)
     monkeypatch.delenv("LOG_TO_STDOUT", raising=False)
+    monkeypatch.delenv("METRICS_PORT", raising=False)
 
     class TestSettings(config.Settings):
         model_config = config.SettingsConfigDict(
@@ -37,6 +38,7 @@ def test_default_values(monkeypatch):
     assert s.REQUEST_DELAY == 2.0
     assert s.LOG_LEVEL == "INFO"
     assert s.VERIFY_SSL is True
+    assert s.METRICS_PORT == 8000
 
 
 def test_app_settings_instance():
@@ -51,6 +53,15 @@ def test_env_override_num_requests(monkeypatch):
     s = config.Settings()
 
     assert s.NUM_REQUESTS == 42
+
+
+def test_env_override_metrics_port(monkeypatch):
+    """Test environment variable override for METRICS_PORT."""
+    monkeypatch.setenv("METRICS_PORT", "9100")
+
+    s = config.Settings()
+
+    assert s.METRICS_PORT == 9100
 
 
 @pytest.mark.parametrize(
