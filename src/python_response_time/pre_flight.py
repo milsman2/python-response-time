@@ -21,7 +21,7 @@ def _run(cmd: list[str]) -> None:
 
 
 def run_checks() -> None:
-    """Run ruff, black, and tests (coverage+pytest).
+    """Run Ruff, mypy, and tests (coverage+pytest).
 
     Intended usage:
     `uv run checks`
@@ -29,8 +29,8 @@ def run_checks() -> None:
     py = sys.executable
 
     _run([py, "-m", "ruff", "check", ".", "--fix"])
-    _run([py, "-m", "black", "."])
     _run([py, "-m", "ruff", "check", "."])
+    _run([py, "-m", "mypy", "src"])
     _run([py, "-m", "coverage", "run", "-m", "pytest"])
 
     logger.info("All checks completed.")

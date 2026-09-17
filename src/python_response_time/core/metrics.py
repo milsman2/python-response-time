@@ -12,6 +12,6 @@ REQUEST_LATENCY = Histogram(
 )
 
 
-def start_metrics_server(port: int = 8000):
+def start_metrics_server(port: int = 8000) -> None:
     """Start the Prometheus metrics server."""
     start_http_server(port)
