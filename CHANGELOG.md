@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.10.0 (2026-09-17)
+
+### Features
+
+- Remove black and align tooling with ruff + mypy
+  ([`b44f31e`](https://github.com/milsman2/python-response-time/commit/b44f31e0bca3c1181d4d32625334af72a2866740))
+
+
 ## v1.9.1 (2026-09-06)
 
 ### Bug Fixes
