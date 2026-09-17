@@ -111,9 +111,11 @@ uv run checks
 This runs:
 
 1. `ruff check . --fix`
-2. `black .`
-3. `ruff check .`
+2. `ruff check .`
+3. `mypy src`
 4. `coverage run -m pytest`
+
+The project uses the Google Python style guide for docstrings and linting, enforced via Ruff with Pydocstyle and mypy for static type checking.
 
 ## Project structure
 
